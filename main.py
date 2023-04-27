@@ -168,6 +168,12 @@ def generate_report(gpo: str, start: str, end: str, rerun: bool = False):
             <title>Rebate Tracing</title>
         </head>
         <body>
+            <div
+                style="display: absolute; width: 100%; text-align: center;"
+            >
+                <a style="margin:auto;" href="/">Return to home page</a>
+            </div>
+
             <h1>Rebate Tracing</h1>
             <p>Report(s) generated successfully.</p>
             <p>Report generated on {date_of_file}</p>
@@ -198,8 +204,6 @@ def generate_report(gpo: str, start: str, end: str, rerun: bool = False):
     html += """
             </details>
 
-            <br><br>
-            <a style="margin:auto;" href="/">Return to home page</a>
         </body>
     </html>
     """
