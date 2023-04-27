@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: gpo-tracer
+    restart: unless-stopped
+    volumes:
+      - ./reports:/app/reports
+    ports:
+      - "80:80"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
