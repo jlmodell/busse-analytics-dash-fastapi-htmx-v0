@@ -172,7 +172,9 @@ def generate_report(gpo: str, start: str, end: str, rerun: bool = False):
             <hr />
             <br>
 
-            <a id="grouped_report" href="/download/{GROUPED_OUTPUT_FILENAME}">Download Grouped Report</a>
+            <a id="grouped_report" href="/download/{GROUPED_OUTPUT_FILENAME}">
+                Download Grouped Report
+            </a>
             <details>
             <summary>Click to see grouped report</summary>            
     """
@@ -180,16 +182,21 @@ def generate_report(gpo: str, start: str, end: str, rerun: bool = False):
     html += f"""
             </details>
             <br><br>
-            <a id="detailed_report" href="/download/{OUTPUT_FILENAME}">Download Report</a>
+            <a id="detailed_report" href="/download/{OUTPUT_FILENAME}">
+                Download Detailed Report
+            </a>
             <details>
-            <summary>Click to see detailed report (*sample first 100 rows* -> download to see full report)</summary>
+            <summary>
+                Click to see detailed report 
+                (*sample first 100 rows* -> download to see full report)
+            </summary>
     """
     html += df_html
     html += """
             </details>
 
             <br><br>
-            <div style="display:flex;justify-items:center;align-items:center;"><a style="margin:auto;" href="/">Return to home page</a></div>
+            <a style="margin:auto;" href="/">Return to home page</a>
         </body>
     </html>
     """
