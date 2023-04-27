@@ -65,7 +65,8 @@ def read_root():
         <body>
             <h1>Rebate Tracing</h1>
             <p>
-                Enter a GPO, start date, and end date to generate a rebate tracing report.
+                Enter a GPO, start date, and end date to generate a rebate tracing
+                 report.
             </p>
             
             <datalist id="months">"""
