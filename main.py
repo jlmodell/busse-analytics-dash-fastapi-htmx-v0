@@ -211,6 +211,73 @@ def generate_report(gpo: str, start: str, end: str, rerun: bool = False):
     return HTMLResponse(content=html, status_code=200)
 
 
+@app.get("/grouped_report.json")
+def generate_report_json(
+    gpo: str, start: str, end: str, grouped: bool = False, rerun: bool = False
+):
+    valid_months = build_date_choices()
+
+    gpo = gpo.strip().upper()
+    start = start.strip().upper()
+    end = end.strip().upper()
+
+    start_index = valid_months.index(start)
+    end_index = valid_months.index(end)
+
+    try:
+        valid_months = valid_months[start_index : end_index + 1]
+    except IndexError:
+        return HTMLResponse(
+            content="<p>Invalid date range. Please try again.</p>",
+            status_code=400,
+        )
+
+    OUTPUT_FILENAME = f"{gpo}_{start}_{end}.xlsx"
+    GROUPED_OUTPUT_FILENAME = f"grouped_{OUTPUT_FILENAME}"
+
+    if (
+        os.path.exists(os.path.join("reports", OUTPUT_FILENAME))
+        and os.path.exists(os.path.join("reports", GROUPED_OUTPUT_FILENAME))
+        and not rerun
+    ):
+        df = excel_to_dataframe(os.path.join("reports", OUTPUT_FILENAME))
+        grouped_df = excel_to_dataframe(
+            os.path.join("reports", GROUPED_OUTPUT_FILENAME)
+        )
+
+    else:
+        pipeline = [
+            {
+                "$match": {
+                    "gpo": gpo,
+                    "period": {"$regex": "|".join(valid_months)},
+                },
+            }
+        ]
+
+        df = pipeline_to_dataframe(find_with_pipeline, pipeline)
+        df = process_dataframe(df)
+
+        df.to_excel(os.path.join("reports", OUTPUT_FILENAME), index=False)
+
+        grouped_df = group_by(df)
+
+        grouped_df.to_excel(
+            os.path.join("reports", GROUPED_OUTPUT_FILENAME), index=True
+        )
+
+    if grouped:
+        return {
+            "data": grouped_df.to_json(orient="records"),
+            "download": f"/download/{GROUPED_OUTPUT_FILENAME}",
+        }
+
+    return {
+        "data": df.to_json(orient="records"),
+        "download": f"/download/{OUTPUT_FILENAME}",
+    }
+
+
 @app.get("/download/{OUTPUT_FILENAME}")
 def download_report(OUTPUT_FILENAME: str):
     file = os.path.join("reports", OUTPUT_FILENAME)
